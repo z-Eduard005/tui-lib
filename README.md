@@ -1,1 +1,1 @@
-# ETUI - Simple tui elemets library
+# tui-lib - Simple tui elemets library
