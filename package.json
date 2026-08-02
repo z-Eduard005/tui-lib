@@ -1,13 +1,26 @@
 {
-  "name": "etui",
-  "version": "1.0.0",
+  "name": "@z-eduard005/tui-lib",
+  "version": "0.0.0",
   "description": "Simple tui elemets library",
   "author": "z-Eduard005",
   "license": "MIT",
+  "main": "./dist/main.js",
+  "module": "./dist/main.mjs",
+  "types": "./dist/main.d.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "cli",
+    "library",
+    "npm",
+    "tui",
+    "typescript"
+  ],
   "scripts": {
-    "build": "tsup src/main.ts --format cjs --target node18 --out-dir build --treeshake --minify",
-    "release": "npm run build && npm release",
-    "test": "npm run build && echo test"
+    "build": "tsup src/main.ts --format cjs --target node18 --out-dir dist --treeshake --minify --dts-resolve --clean",
+    "publish": "npm run build && npm publish --public",
+    "test": "npm run build && node .vscode/test/test.js"
   },
   "devDependencies": {
     "@types/node": "^22.20.1",
@@ -15,6 +28,7 @@
     "globals": "^16.3.0",
     "tsup": "^8.4.0",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.41.0"
+    "typescript-eslint": "^8.41.0",
+    "jiti": "^2.7.0"
   }
 }
