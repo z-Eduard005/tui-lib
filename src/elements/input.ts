@@ -17,8 +17,10 @@ export function inputElement(
 
     const sanitize = (text: string) => [...text].filter((c) => {
       const code = c.charCodeAt(0);
-      return code >= 33 && code <= 126 && (!filter || filter.test(c));
+      return (code === 32 || (code >= 33 && code <= 126)) && (!filter || filter.test(c));
     }).join("");
+
+    const isWordChar = (c: string) => /[A-Za-z0-9_]/.test(c);
 
     const insert = (text: string) => {
       value = value.slice(0, cursorPos) + text + value.slice(cursorPos);
@@ -106,12 +108,36 @@ export function inputElement(
         resolve({ value, cancelled: false });
         return;
       }
-      if (key === "\x7f" || key === "\b") {
+      if (key === "\x7f") {
         if (cursorPos > 0) {
           value = value.slice(0, cursorPos - 1) + value.slice(cursorPos);
           cursorPos--;
           rerender();
         }
+        return;
+      }
+      if (key === "\x08" || key === "\x1b[127;5u" || key === "\x1b[127;5~") {
+        let end = cursorPos;
+        while (end > 0 && !isWordChar(value[end - 1]!)) end--;
+        while (end > 0 && isWordChar(value[end - 1]!)) end--;
+        value = value.slice(0, end) + value.slice(cursorPos);
+        cursorPos = end;
+        rerender();
+        return;
+      }
+      if (key === "\x1b[3~") {
+        if (cursorPos < value.length) {
+          value = value.slice(0, cursorPos) + value.slice(cursorPos + 1);
+          rerender();
+        }
+        return;
+      }
+      if (key === "\x1b[3;5~" || key === "\x1b[3;5u") {
+        let start = cursorPos;
+        while (start < value.length && !isWordChar(value[start]!)) start++;
+        while (start < value.length && isWordChar(value[start]!)) start++;
+        value = value.slice(0, cursorPos) + value.slice(start);
+        rerender();
         return;
       }
       if (key === "\u001b[D") {
@@ -139,7 +165,7 @@ export function inputElement(
         }
         return;
       }
-      if (key.length === 1 && key.charCodeAt(0) >= 33 && value.length < MAX_LEN && (!filter || filter.test(key))) {
+      if (key.length === 1 && key.charCodeAt(0) >= 32 && value.length < MAX_LEN && (!filter || filter.test(key))) {
         insert(key);
         rerender();
         return;

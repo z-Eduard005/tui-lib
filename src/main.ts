@@ -118,7 +118,7 @@ export default class UI {
     }
   }
 
-  restoreMainScreen() {
+  destroyAltScreen() {
     if (this.loaderInterval) {
       clearInterval(this.loaderInterval);
       this.loaderInterval = null;

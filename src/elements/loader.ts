@@ -48,7 +48,7 @@ export function loaderElement(this: UI, text?: string): { stop: () => void } {
       clearInterval(id);
       this.loaderInterval = null;
       cleanup();
-      this.restoreMainScreen();
+      this.destroyAltScreen();
     }
   };
 }
