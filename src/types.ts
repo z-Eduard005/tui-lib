@@ -3,6 +3,7 @@ export type LayoutOptions = {
   desc?: string
   backText?: string | null
   action?: { label: string; run: () => void | Promise<void> }
+  action2?: { label: string; run: () => void | Promise<void> }
 }
 
 export type InputOptions = LayoutOptions & {

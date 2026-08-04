@@ -20,7 +20,7 @@
   "scripts": {
     "build": "tsup src/main.ts --format cjs --target node18 --out-dir dist --treeshake --minify --dts-resolve --clean",
     "publish": "npm run build && npm publish --public",
-    "test": "npm run build && node .vscode/test/test.js",
+    "test": "npm run build && ptyxis -- node .vscode/test/test.js",
     "test:auto": "npm run build && node .vscode/test/auto.test.js"
   },
   "devDependencies": {

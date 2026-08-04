@@ -134,7 +134,7 @@ export default class UI {
     }
   }
 
-  render: Render = (draw, handleKey, { title, desc, backText, action } = {}) => {
+  render: Render = (draw, handleKey, { title, desc, backText, action, action2 } = {}) => {
     const TITLE_WIDTH = 50;
     const stdin = process.stdin;
 
@@ -190,16 +190,22 @@ export default class UI {
 
       const termHeight = process.stdout.rows || 24;
       const hasBack = backText !== null;
-      const topPadding = Math.max(0, Math.floor((termHeight - (hasBack ? 1 : 0) - contentLines.length) / 2));
+      const headerLines = hasBack ? (action2 ? 2 : 1) : 0;
+      const topPadding = Math.max(0, Math.floor((termHeight - headerLines - contentLines.length) / 2));
 
       let frame = "\x1B[?2026h\x1B[2J\x1B[H";
       if (hasBack) {
         frame += backLine;
         if (action) {
           const actionText = `${action.label} (Ctrl+O)`;
-          frame += `\x1B[${c - actionText.length + 1}G\x1B[2m${actionText}\x1B[22m`;
+          frame += `\x1B[${Math.max(1, c - actionText.length + 1)}G\x1B[2m${actionText}\x1B[22m`;
         }
         frame += "\n";
+        if (action2) {
+          const action2Text = `${action2.label} (Ctrl+I)`;
+          frame += `\x1B[${Math.max(1, c - action2Text.length + 1)}G\x1B[2m${action2Text}\x1B[22m`;
+          frame += "\n";
+        }
       }
       frame += "\n".repeat(topPadding);
       frame += contentLines.join("\n");
@@ -210,10 +216,11 @@ export default class UI {
     renderFrame();
 
     const onData = async (key: string) => {
-      if (key === "\u000f" && action) {
+      if ((key === "\u000f" && action) || (key === "\x09" && action2)) {
+        const act = key === "\u000f" ? action! : action2!;
         stdin.removeListener("data", onData);
         process.stdout.removeListener("resize", renderFrame);
-        await action.run();
+        await act.run();
         renderFrame();
         handleKey(key);
         process.stdout.on("resize", renderFrame);
