@@ -1,15 +1,17 @@
 {
   "name": "@z-eduard005/tui-lib",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Simple tui elemets library",
-  "author": "z-Eduard005",
+  "author": "z-eduard005",
   "license": "MIT",
   "main": "./dist/main.js",
-  "module": "./dist/main.mjs",
   "types": "./dist/main.d.ts",
   "files": [
     "dist"
   ],
+  "repository": {
+    "url": "https://github.com/z-Eduard005/tui-lib"
+  },
   "keywords": [
     "cli",
     "library",
@@ -19,7 +21,7 @@
   ],
   "scripts": {
     "build": "tsup src/main.ts --format cjs --target node18 --out-dir dist --treeshake --minify --dts-resolve --clean",
-    "publish": "npm run build && npm publish --public",
+    "publish": "npm run build && npm publish --access=public",
     "test": "npm run build && ptyxis -- node .vscode/test/test.js",
     "test:auto": "npm run build && node .vscode/test/auto.test.js"
   },
