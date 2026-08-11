@@ -23,7 +23,8 @@
     "build": "tsup src/main.ts --format cjs --target node18 --out-dir dist --treeshake --minify --dts-resolve --clean",
     "publish": "npm run build && npm publish --access=public",
     "test": "npm run build && ptyxis -- node .vscode/test/test.js",
-    "test:auto": "npm run build && node .vscode/test/auto.test.js"
+    "test:auto": "npm run build && node .vscode/test/auto.test.js",
+    "keyprobe": "ptyxis -- node .vscode/test/keyprobe.js"
   },
   "devDependencies": {
     "@types/node": "^22.20.1",

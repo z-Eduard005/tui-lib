@@ -140,6 +140,18 @@ export function inputElement(
         rerender();
         return;
       }
+      if (key === "\x1b[1;5D" || key === "\x1b[5D" || key === "\x1b[OD" || key === "\x1b[68;5u" || key === "\x1b[27;5;68~") {
+        while (cursorPos > 0 && !isWordChar(value[cursorPos - 1]!)) cursorPos--;
+        while (cursorPos > 0 && isWordChar(value[cursorPos - 1]!)) cursorPos--;
+        rerender();
+        return;
+      }
+      if (key === "\x1b[1;5C" || key === "\x1b[5C" || key === "\x1b[OC" || key === "\x1b[67;5u" || key === "\x1b[27;5;67~") {
+        while (cursorPos < value.length && !isWordChar(value[cursorPos]!)) cursorPos++;
+        while (cursorPos < value.length && isWordChar(value[cursorPos]!)) cursorPos++;
+        rerender();
+        return;
+      }
       if (key === "\u001b[D") {
         if (cursorPos > 0) {
           cursorPos--;

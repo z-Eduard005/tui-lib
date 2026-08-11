@@ -30,9 +30,9 @@ export type ListItem = {
   blocked?: boolean
 }
 
-export type LogType = "info" | "success" | "warning" | "error"
-
 export type Color = "blue" | "red" | "green" | "yellow" | "cyan" | "magenta" | "gray"
+
+export type LogType = "info" | "success" | "warning" | "error" | Color | "accent"
 
 export type Render = (
   draw: () => string,

@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { exec } from "child_process";
 import { listElement } from "./elements/list";
 import { inputElement } from "./elements/input";
 import { spinnerElement } from "./elements/spinner";
@@ -54,13 +54,19 @@ export default class UI {
     return process.stdout.columns || 80;
   }
 
-  async pasteFromClipboard() {
-    if (process.platform !== "win32") return "";
-    return execSync(`powershell -NoProfile -NonInteractive -Command "Get-Clipboard"`).toString();
+  pasteFromClipboard() {
+    if (process.platform !== "win32") return Promise.resolve("");
+    return new Promise<string>(resolve => {
+      exec(`powershell -NoProfile -NonInteractive -Command "Get-Clipboard"`, (_err, stdout) => resolve(stdout));
+    });
   };
 
   textColor(str: string, type: LogType) {
-    return `\x1b[3${type === "success" ? 2 : type === "warning" ? 3 : type === "error" ? 1 : 4}m\x1b[1m${str}\x1b[0m`;
+    const basic: Record<string, number> = { success: 2, warning: 3, error: 1, info: 4 };
+    const color = basic[type] !== undefined
+      ? `\x1b[3${basic[type]}m`
+      : `\x1b[38;5;${type === "accent" ? this.accent : UI.Colors[type as Color]}m`;
+    return `${color}\x1b[1m${str}\x1b[0m`;
   };
 
   wrap(text: string, maxWidth: number): string[] {
@@ -216,7 +222,7 @@ export default class UI {
     renderFrame();
 
     const onData = async (key: string) => {
-      if ((key === "\u000f" && action) || (key === "\x09" && action2)) {
+      if ((key === "\u000f" && action) || ((key === "\x09" || key === "\x1b[105;5u" || key === "\x1b[27;5;105~") && action2)) {
         const act = key === "\u000f" ? action! : action2!;
         stdin.removeListener("data", onData);
         process.stdout.removeListener("resize", renderFrame);

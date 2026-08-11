@@ -25,6 +25,7 @@ export function listElement(
       const LIST_WIDTH = 50;
       const SEL_BG = this.accentBg;
       const SEL_FG = "\x1B[38;5;255m";
+      const BADGE_BG = "\x1B[48;5;240m";
       const TEXT_AREA = LIST_WIDTH - 2 * this.PADDING;
       const listIndent = this.centerPad(LIST_WIDTH);
       const emptyLine = `${listIndent}${this.BG}${this.FG}${" ".repeat(LIST_WIDTH)}${this.RST}`;
@@ -79,11 +80,13 @@ export function listElement(
           const fg = isSelected ? SEL_FG : this.FG;
 
           const plain = this.stripAnsi(l);
-          const BADGE_STYLE = item.badgeColor === "green" ? "\x1B[32m\x1B[1m" : item.badgeColor === "yellow" ? "\x1B[33m\x1B[1m" : "\x1B[48;5;196m\x1B[38;5;255m";
+          const badgeBg = isSelected ? BADGE_BG : this.BG;
+          const BADGE_STYLE = `${badgeBg}${item.badgeColor === "green" ? "\x1B[32m\x1B[1m" : item.badgeColor === "yellow" ? "\x1B[33m\x1B[1m" : item.badgeColor === "red" ? "\x1B[31m\x1B[1m" : "\x1B[38;5;255m"}`;
           const displayBadge = item.badge || (item.blocked ? "locked" : undefined);
           const truncatedBadge = displayBadge && displayBadge.length > 7 ? displayBadge.slice(0, 7) + ".." : displayBadge;
-          const badgeText = truncatedBadge && i === 0 ? ` ${BADGE_STYLE}${truncatedBadge}${bg}${fg}` : "";
-          const rightFill = Math.max(0, LIST_WIDTH - this.PADDING - plain.length - scrollBarWidth - (truncatedBadge && i === 0 ? truncatedBadge.length + 1 : 0));
+          const showBadge = !!(truncatedBadge && i === 0);
+          const badgeText = showBadge ? ` ${BADGE_STYLE}${truncatedBadge}${bg}${fg}` : "";
+          const rightFill = Math.max(0, LIST_WIDTH - this.PADDING - plain.length - scrollBarWidth - (truncatedBadge && showBadge ? truncatedBadge.length + 1 : 0));
           const style = i === 0 ? "\x1B[1m" : "";
           const resetStyle = i === 0 ? "\x1B[22m" : "";
 
