@@ -3,11 +3,10 @@ import type { ListItem, ListOptions } from "../types"
 
 export function listElement(
   this: UI,
-  inputItems: (string | ListItem)[],
+  inputItems: ListItem[],
   layoutOptions?: ListOptions
 ): Promise<{ value: string; index: number; cancelled: boolean }> {
-  const toItem = (i: string | ListItem): ListItem => typeof i === "string" ? { label: i } : i;
-  const items: ListItem[] = inputItems.map(toItem);
+  const items: ListItem[] = inputItems;
   return new Promise((resolve) => {
     let selectedIndex = layoutOptions?.defaultValue !== undefined
       ? Math.min(Math.max(0, layoutOptions.defaultValue), Math.max(0, items.length - 1))
@@ -117,10 +116,9 @@ export function listElement(
     if (layoutOptions?.refresh) {
       const refreshInterval = async () => {
         const newItems = await layoutOptions.refresh!();
-        const newNormalized = newItems.map(toItem);
-        if (JSON.stringify(newNormalized) !== JSON.stringify(items)) {
+        if (JSON.stringify(newItems) !== JSON.stringify(items)) {
           items.length = 0;
-          items.push(...newNormalized);
+          items.push(...newItems);
           rerender();
         }
       };
@@ -168,7 +166,7 @@ export function listElement(
         if (pool.length === 0) return;
         if (layoutOptions?.lockable && pool[selectedIndex]?.blocked) return;
         cleanup();
-        resolve({ value: pool[selectedIndex]!.value ?? pool[selectedIndex]!.label, index: selectedIndex, cancelled: false });
+        resolve({ value: pool[selectedIndex]!.value, index: selectedIndex, cancelled: false });
         return;
       }
       if (key === "\u001b[A") {

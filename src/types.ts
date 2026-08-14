@@ -15,7 +15,7 @@ export type InputOptions = LayoutOptions & {
 }
 
 export type ListOptions = LayoutOptions & {
-  refresh?: () => Promise<(string | ListItem)[]>
+  refresh?: () => Promise<ListItem[]>
   resolveOn?: () => Promise<string | null | undefined>
   defaultValue?: number
   lockable?: boolean
@@ -23,8 +23,8 @@ export type ListOptions = LayoutOptions & {
 }
 
 export type ListItem = {
+  value: string
   label: string
-  value?: string
   badge?: string
   badgeColor?: "red" | "green" | "yellow"
   blocked?: boolean
