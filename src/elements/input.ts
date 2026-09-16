@@ -17,10 +17,10 @@ export function inputElement(
 
     const sanitize = (text: string) => [...text].filter((c) => {
       const code = c.charCodeAt(0);
-      return (code === 32 || (code >= 33 && code <= 126)) && (!filter || filter.test(c));
+      return (code >= 32 && code !== 127) && (!filter || filter.test(c));
     }).join("");
 
-    const isWordChar = (c: string) => /[A-Za-z0-9_]/.test(c);
+    const isWordChar = (c: string) => /[A-Za-z0-9_\u0418]/.test(c);
 
     const insert = (text: string) => {
       value = value.slice(0, cursorPos) + text + value.slice(cursorPos);
