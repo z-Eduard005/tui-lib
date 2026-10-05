@@ -57,7 +57,7 @@ export default class UI {
   pasteFromClipboard() {
     if (process.platform !== "win32") return Promise.resolve("");
     return new Promise<string>(resolve => {
-      exec(`powershell -NoProfile -NonInteractive -Command "$OutputEncoding=[System.Text.Encoding]::UTF8; Get-Clipboard"`, (_err, stdout) => resolve(stdout));
+      exec(`powershell -NoProfile -NonInteractive -Command "[Console]::OutputEncoding = $OutputEncoding = [System.Text.UTF8Encoding]::new(); Get-Clipboard"`, (_err, stdout) => resolve(stdout));
     });
   };
 
