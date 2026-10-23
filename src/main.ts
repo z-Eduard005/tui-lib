@@ -161,7 +161,7 @@ export default class UI {
         return;
       }
 
-      const backLine = this.dim(`← ${backText || "Back"} (Esc)`);
+      const backLine = this.dim(`← ${backText || "Exit (Esc)"}`);
 
       const contentLines: string[] = [];
 
