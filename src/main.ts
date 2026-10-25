@@ -28,6 +28,8 @@ export default class UI {
   readonly FG = "\x1B[38;5;255m";
   readonly RST = "\x1B[39m\x1B[49m";
   readonly RST_FG = "\x1B[39m";
+  readonly MIN_C = 82;
+  readonly MIN_R = 28;
   readonly loaderFrames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
   list = listElement;
@@ -51,7 +53,7 @@ export default class UI {
   }
 
   cols(): number {
-    return process.stdout.columns || 80;
+    return process.stdout.columns || this.MIN_C;
   }
 
   pasteFromClipboard() {
@@ -149,10 +151,10 @@ export default class UI {
 
     const renderFrame = () => {
       const c = this.cols();
-      const r = process.stdout.rows || 24;
+      const r = process.stdout.rows || this.MIN_R;
 
-      if (c < 82 || r < 24) {
-        const msg = `Terminal too small — need 82x24, have ${c}x${r}`;
+      if (c < this.MIN_C || r < this.MIN_R) {
+        const msg = `Terminal too small — need ${this.MIN_C}x${this.MIN_R}, have ${c}x${r}`;
         const pad = Math.max(0, Math.floor((r - 1) / 2));
         process.stdout.write("\x1B[2J\x1B[H");
         process.stdout.write("\n".repeat(pad));
